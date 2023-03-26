@@ -215,10 +215,26 @@ function updateValues(name, price, quantity) {
             item.price = parseFloat(price).toFixed(2); 
             item.quantity = parseInt(quantity); 
             // reference for rounding: https://linuxhint.com/round-number-to-2-decimal-places-javascript/
-            item.total = (item.price * item.quantity).toFixed(2); 
+            item.total = parseFloat((item.price * item.quantity)).toFixed(2); 
 
         }
     }
+}
+
+function subtotal(){
+    let subtotal = 0; 
+
+    for (var item of items){  
+        subtotal +=  parseFloat(item.total); 
+    }
+
+    
+    let taxes = (0.13 * parseFloat(subtotal)).toFixed(2); 
+    let grand_total = (parseFloat(subtotal) + parseFloat(taxes)).toFixed(2); 
+    $("#subtotal").html(subtotal.toFixed(2)); 
+    $("#taxes").html(taxes); 
+    $("#grand_total").html(grand_total); 
+
 }
 
   $(document).ready(function(){
@@ -330,6 +346,8 @@ function updateValues(name, price, quantity) {
                 $("table#cart-items tr[id=" + name_removed_spaces + "]").find(".item-price").html(price);
                 $("table#cart-items tr[id=" + name_removed_spaces + "]").find(".item-quantity").html(quantity);
                 $("table#cart-items tr[id=" + name_removed_spaces + "]").find(".item-total").html((price * quantity).toFixed(2));
+                
+                subtotal();
             }
             else {
                 // create new item with those values and add to items list
@@ -344,6 +362,8 @@ function updateValues(name, price, quantity) {
 
                 let markup = "<tr id=" + "\"" + name_removed_spaces + "\">" + "<td class='item-name'>" + name + "</td>" + "<td class='item-price'>" + price + "</td>" + "<td class='item-quantity'>" + quantity + "</td>" + "<td class='item-total'>" + new_item.total + "</td>" + "<td> <button class='decrease'>" + "-" + "</button> </td>" + "<td> <button class='increase'>" + "+" + "</button> </td>" + "<td> <button class='delete'>" + "delete" + "</button> </td>"+ "</tr>";
                 $("table tbody").append(markup);
+
+                subtotal();
             
             }
 
@@ -363,7 +383,9 @@ function updateValues(name, price, quantity) {
         $(this).closest('tr').remove(); 
         removeItem(item_name);
 
-        console.log(items); 
+        // console.log(items); 
+
+        subtotal(); 
 
     })  
 
@@ -381,7 +403,7 @@ function updateValues(name, price, quantity) {
         $(this).closest('tr').find(".item-quantity").html(updated_item.quantity);
         $(this).closest('tr').find(".item-total").html(updated_item.total);
 
-        
+        subtotal();
     }) 
     
     $(document).on("click",'.decrease',function(){
@@ -398,7 +420,10 @@ function updateValues(name, price, quantity) {
             let updated_item = getItem(item_name); 
             $(this).closest('tr').find(".item-quantity").html(updated_item.quantity);
             $(this).closest('tr').find(".item-total").html(updated_item.total);
+            subtotal();
         }
+
+        
         
     }) 
 
