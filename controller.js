@@ -382,7 +382,25 @@ function updateValues(name, price, quantity) {
         $(this).closest('tr').find(".item-total").html(updated_item.total);
 
         
-    })  
+    }) 
+    
+    $(document).on("click",'.decrease',function(){
+        
+        
+        let item_name = $(this).closest('tr').find(".item-name").html();
+        let original_item = getItem(item_name); 
+
+    
+        // Update original_item's values and the table. 
+        if ((original_item.quantity - 1) >= 0) {
+            let updated_quantity = original_item.quantity - 1; 
+            updateValues(original_item.name, original_item.price, updated_quantity); 
+            let updated_item = getItem(item_name); 
+            $(this).closest('tr').find(".item-quantity").html(updated_item.quantity);
+            $(this).closest('tr').find(".item-total").html(updated_item.total);
+        }
+        
+    }) 
 
 
     
