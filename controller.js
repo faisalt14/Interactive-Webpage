@@ -10,6 +10,11 @@ var phone_flag = false
 // Flag to check if all inputs are valid
 var inputs_flag = false
 
+// List of items 
+// var item1 =  new Item("item_1", 90.00, 12)
+// var item2 =  new Item("item_2", 95.00, 10)
+var items = []
+
 
 
 
@@ -144,8 +149,54 @@ function phoneCheck(){
     }
 
     phone_flag = true
+}
 
+function validAmazonFields(){
+    let name = $("#name").val();
+    let price = $("#price").val();
+    let quantity = $("#quantity").val();
 
+    // If any field is empty, not valid 
+    if (name == "" || price == "" || quantity == "") {
+        return false;
+        
+    }
+    // Consider case where name is empty spaces 
+    else if (name.trim() == "") {
+        return false;
+    }
+
+    return true; 
+}
+
+function itemExists(name){
+    for (var item of items){
+        // console.log(name, item.name, name == item.name)
+        if (item.name === name){
+            return true;
+        }
+    }
+
+    return false; 
+
+}
+
+function replaceSpaces(name) {
+    // Reference: https://livingwithcode.com/replace-spaces-with-underscores-in-javascript/#:~:text=let's%20get%20started!-,Using%20replace()%20method,the%20spaces%20replaced%20with%20underscores.
+    let result = name.trim().replaceAll(/ /g, "_"); 
+    return result; 
+}
+
+function updateValues(name, price, quantity) {
+    for (var item of items){
+        if (item.name === name){
+            item.price = price; 
+            item.quantity = quantity; 
+            // reference for rounding: https://linuxhint.com/round-number-to-2-decimal-places-javascript/
+            item.total = (item.price * item.quantity).toFixed(2); 
+
+        }
+    }
 }
 
   $(document).ready(function(){
@@ -226,13 +277,53 @@ function phoneCheck(){
             inputs_flag = false
             $("#notification").html("At least one field is invalid. Please correct it before proceeding")
         }
+    })
+
+    $("#add_update_item").click(function add_update(){
+
+        // Make sure all 3 fields are filled out 
+        let fields_result = validAmazonFields();
+
+        // Place holder to check if item exsits. 
+        let item_exists = null; 
+
         
 
+        if (fields_result == true){
+            let name = $("#name").val();
+            let price = $("#price").val();
+            let quantity = $("#quantity").val();
+            let name_removed_spaces = replaceSpaces(name); 
+            
+            // console.log(replaceSpaces(name));             
+            // console.log(itemExists(name))
 
-        // console.log(inputs_flag)
+            // check if original item name  already exists
+            if (itemExists(name) === true) {
+                updateValues(name, price, quantity);
 
-       
+                // update values in existsing table row 
+                // reference: https://stackoverflow.com/questions/5484992/how-to-update-table-cell-value-using-jquery
+                $("table#cart-items tr[id=" + name_removed_spaces + "]").find(".item-name").html(name);
+                $("table#cart-items tr[id=" + name_removed_spaces + "]").find(".item-price").html(price);
+                $("table#cart-items tr[id=" + name_removed_spaces + "]").find(".item-quantity").html(quantity);
+                $("table#cart-items tr[id=" + name_removed_spaces + "]").find(".item-total").html((price * quantity).toFixed(2));
+            }
+            else {
+                // create new item with those values and add to items list
+                let new_item = new Item(name, price, quantity);
+                items.push(new_item); 
 
+                // add item to tbody 
+                // reference: https://www.tutorialspoint.com/How-to-add-table-row-in-jQuery
+
+                let markup = "<tr id=" + "\"" + name_removed_spaces + "\">" + "<td class='item-name'>" + name + "</td>" + "<td class='item-price'>" + price + "</td>" + "<td class='item-quantity'>" + quantity + "</td>" + "<td class='item-total'>" + new_item.total + "</td>" + "<td> <button class='decrease'>" + "-" + "</button> </td>" + "<td> <button class='increase'>" + "+" + "</button> </td>" + "<td> <button class='delete'>" + "delete" + "</button> </td>"+ "</tr>";
+                $("table tbody").append(markup);
+            
+            }
+
+            // console.log(items[1].name, items[1].price, items[1].quantity); 
+        }
 
     })
 
