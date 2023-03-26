@@ -185,7 +185,6 @@ function removeItem(name){
     // reference: https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array-in-javascript
 
     for (var item of items){
-        // console.log(name, item.name, name == item.name)
         if (item.name === name){
             const index = items.indexOf(item); 
             if (index > -1){
@@ -194,6 +193,14 @@ function removeItem(name){
         }
     }
 
+}
+
+function getItem(name){
+    for (var item of items){  
+        if (item.name === name){
+            return item; 
+        }
+    }
 }
 
 function replaceSpaces(name) {
@@ -205,8 +212,8 @@ function replaceSpaces(name) {
 function updateValues(name, price, quantity) {
     for (var item of items){
         if (item.name === name){
-            item.price = price; 
-            item.quantity = quantity; 
+            item.price = parseFloat(price).toFixed(2); 
+            item.quantity = parseInt(quantity); 
             // reference for rounding: https://linuxhint.com/round-number-to-2-decimal-places-javascript/
             item.total = (item.price * item.quantity).toFixed(2); 
 
@@ -358,6 +365,23 @@ function updateValues(name, price, quantity) {
 
         console.log(items); 
 
+    })  
+
+    $(document).on("click",'.increase',function(){
+        
+        
+        let item_name = $(this).closest('tr').find(".item-name").html();
+        let original_item = getItem(item_name); 
+
+    
+        // Update original_item's values and the table. 
+        let updated_quantity = original_item.quantity + 1; 
+        updateValues(original_item.name, original_item.price, updated_quantity); 
+        let updated_item = getItem(item_name); 
+        $(this).closest('tr').find(".item-quantity").html(updated_item.quantity);
+        $(this).closest('tr').find(".item-total").html(updated_item.total);
+
+        
     })  
 
 
