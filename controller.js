@@ -181,6 +181,21 @@ function itemExists(name){
 
 }
 
+function removeItem(name){
+    // reference: https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array-in-javascript
+
+    for (var item of items){
+        // console.log(name, item.name, name == item.name)
+        if (item.name === name){
+            const index = items.indexOf(item); 
+            if (index > -1){
+                items.splice(index, 1); 
+            }
+        }
+    }
+
+}
+
 function replaceSpaces(name) {
     // Reference: https://livingwithcode.com/replace-spaces-with-underscores-in-javascript/#:~:text=let's%20get%20started!-,Using%20replace()%20method,the%20spaces%20replaced%20with%20underscores.
     let result = name.trim().replaceAll(/ /g, "_"); 
@@ -312,7 +327,10 @@ function updateValues(name, price, quantity) {
             else {
                 // create new item with those values and add to items list
                 let new_item = new Item(name, price, quantity);
+
                 items.push(new_item); 
+                // call updateVlaues to make new_item.total fixed to 2 decimals
+                updateValues(name, price, quantity); 
 
                 // add item to tbody 
                 // reference: https://www.tutorialspoint.com/How-to-add-table-row-in-jQuery
@@ -326,6 +344,21 @@ function updateValues(name, price, quantity) {
         }
 
     })
+
+    // reference to make event handler for class of "delete" and to remove from table body
+        // https://stackoverflow.com/questions/44872879/jquery-delete-table-row-if-delete-button-is-clicked
+    $(document).on("click",'.delete',function(){
+        
+        // console.log($(this).closest('tr'));
+        let item_name = $(this).closest('tr').find(".item-name").html();
+        let item_id = $(this).closest('tr').attr('id');
+        
+        $(this).closest('tr').remove(); 
+        removeItem(item_name);
+
+        console.log(items); 
+
+    })  
 
 
     
