@@ -13,7 +13,7 @@ var inputs_flag = false
 // List of items 
 var items = []
 
-// 
+// Page number of scrolling and if a next page exists
 var page_num = 1; 
 var is_next = false; 
 
@@ -101,11 +101,7 @@ function emailCheck(){
     let email = $("#email").val()
     
     // regex reference: https://www.simplilearn.com/tutorials/javascript-tutorial/email-validation-in-javascript
-    // var emailRegex =  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-
-
-    // regex reference: https://www.abstractapi.com/guides/email-address-pattern-validation
-    var emailRegex =  /([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@([0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?(\.[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?)*|\[((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|IPv6:((((0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}):){6}|::((0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}):){5}|[0-9A-Fa-f]{0,4}::((0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}):){4}|(((0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}):)?(0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}))?::((0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}):){3}|(((0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}):){0,2}(0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}))?::((0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}):){2}|(((0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}):){0,3}(0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}))?::(0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}):|(((0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}):){0,4}(0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}))?::)((0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}):(0|[1-9A-Fa-f][0-9A-Fa-f]{0,3})|(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3})|(((0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}):){0,5}(0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}))?::(0|[1-9A-Fa-f][0-9A-Fa-f]{0,3})|(((0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}):){0,6}(0|[1-9A-Fa-f][0-9A-Fa-f]{0,3}))?::)|(?!IPv6:)[0-9A-Za-z-]*[0-9A-Za-z]:[!-Z^-~]+)])$/;
+    var emailRegex =  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
     var validCharacters = emailRegex.test(email)
 
     if (email_flag === false && email.length === 0){
@@ -173,7 +169,6 @@ function validAmazonFields(){
 
 function itemExists(name){
     for (var item of items){
-        // console.log(name, item.name, name == item.name)
         if (item.name === name){
             return true;
         }
@@ -223,49 +218,6 @@ function updateValues(name, price, quantity) {
     }
 }
 
-// async function loadInitalPage() {
-
-//     // reference for asynch and await for fetch: https://www.javascripttutorial.net/javascript-fetch-api/
-//     let response = await fetch('https://ibs.utm.utoronto.ca/csc309/a3/text/data?paragraph=' + page_num, {
-//         method: 'GET'
-//     })
-    
-//     let result = await response.text(); 
-//     let dict = JSON.parse(result); 
-//     let data = dict["data"];
-    
-//     for (let key in data){  
-//         let paragraph_dict = data[key]; 
-//         // console.log(paragraph_dict['paragraph']);
-//         let id = 'paragraph_' + paragraph_dict['paragraph']
-//         let content = paragraph_dict["content"];
-//         let ending = "(Paragraph: " + paragraph_dict['paragraph'] + ")";
-        
-//         // reference for creating new element tags and adding them to an existing tag
-//             // https://www.tutorialrepublic.com/faq/how-to-create-a-div-element-in-jquery.php
-
-//         // create div element for paragraph and add to end of div with id="data"
-//         $("#data").append("<div " + "id='" + id + "'> " + "</div>"); 
-
-//         // add content in a p tag 
-//         $("#" + id).append("<p>" + content + " " + "<b>" + ending + "</b>" + "</p>"); 
-
-//         // add likes button 
-//         $("#" + id).append("<button class='like'>" + "Likes: " + paragraph_dict["likes"] + "</button>");
-//     }
-    
-//     if (dict["next"] === true){
-//         is_next = true; 
-//         page_num += 5;
-
-//     }
-//     else if (dict["next"] === false){
-//         is_next = false; 
-
-//     }
-
-// }
-
 function loadInitalPage() {
 
     $.ajax({
@@ -310,107 +262,6 @@ function loadInitalPage() {
         }
     })
 }
-
-// function nextPage() {
-
-//     if (is_next === true) {
-
-
-//         $.ajax({
-//             url: 'https://ibs.utm.utoronto.ca/csc309/a3/text/data?paragraph=' + page_num,
-//             type:'GET',
-//             dataType: 'json',
-//             success: function (data) {
-//                 var response = data; 
-//                 var data_dict = data["data"];
-//                 // console.log(data_dict);          
-    
-//                 for (var paragraph_dict of data_dict){
-//                     var id = 'paragraph_' + paragraph_dict['paragraph']
-//                     var content = paragraph_dict["content"];
-//                     var ending = "(Paragraph: " + paragraph_dict['paragraph'] + ")";
-    
-//                     //  reference for creating new element tags and adding them to an existing tag
-//                       // https://www.tutorialrepublic.com/faq/how-to-create-a-div-element-in-jquery.php
-    
-//                     // create div element for paragraph and add to end of div with id="data"
-//                     $("#data").append("<div " + "id='" + id + "'> " + "</div>"); 
-    
-//                     // add content in a p tag 
-//                     $("#" + id).append("<p>" + content + " " + "<b>" + ending + "</b>" + "</p>"); 
-    
-//                     // add likes button 
-//                     $("#" + id).append("<button class='like'>" + "Likes: " + paragraph_dict["likes"] + "</button>");
-                            
-//                 }
-    
-//                 if (response["next"] === true){
-//                     is_next = true; 
-//                     page_num += 5;
-//                 }
-//                 else if (response["next"] === false){
-//                     is_next = false; 
-//                     $("#" + id).append("<p><b>" + "You have reached the end" + "</b></p>"); 
-    
-//                 }
-    
-    
-//             }
-//         })
-
-//     }
-// }
-
-
-
-// async function nextPage() {
-
-//     if (is_next === true) {
-
-//         // reference for asynch and await for fetch: https://www.javascripttutorial.net/javascript-fetch-api/
-//         var response = await fetch('https://ibs.utm.utoronto.ca/csc309/a3/text/data?paragraph=' + page_num, {
-//             method: 'GET'
-//         })
-        
-//         var result = await response.text(); 
-//         var dict = JSON.parse(result); 
-//         var data = dict["data"];
-        
-//         for (let key in data){  
-//             var paragraph_dict = data[key]; 
-//             // console.log(paragraph_dict['paragraph']);
-//             var id = 'paragraph_' + paragraph_dict['paragraph']
-//             var content = paragraph_dict["content"];
-//             var ending = "(Paragraph: " + paragraph_dict['paragraph'] + ")";
-            
-//             // reference for creating new element tags and adding them to an existing tag
-//                 // https://www.tutorialrepublic.com/faq/how-to-create-a-div-element-in-jquery.php
-
-//             // create div element for paragraph and add to end of div with id="data"
-//             $("#data").append("<div " + "id='" + id + "'> " + "</div>"); 
-
-//             // add content in a p tag 
-//             $("#" + id).append("<p>" + content + " " + "<b>" + ending + "</b>" + "</p>"); 
-
-//             // add likes button 
-//             $("#" + id).append("<button class='like'>" + "Likes: " + paragraph_dict["likes"] + "</button>");
-//         }
-//     }
-
-    
-//     if (dict["next"] === true){
-//         is_next = true; 
-//         page_num += 5;
-
-//     }
-
-//     else if (dict["next"] === false){
-//         is_next = false; 
-//         $("#" + id).append("<p><b>" + "You have reached the end" + "</b></p>"); 
-        
-//     }
-
-// }
 
 function subtotal(){
     let subtotal = 0; 
@@ -523,9 +374,6 @@ $(document).ready(function(){
             let price = $("#price").val();
             let quantity = $("#quantity").val();
             let name_removed_spaces = replaceSpaces(name); 
-            
-            // console.log(replaceSpaces(name));             
-            // console.log(itemExists(name))
 
             // check if original item name  already exists
             if (itemExists(name) === true) {
@@ -557,31 +405,24 @@ $(document).ready(function(){
                 subtotal();
             
             }
-
-            // console.log(items[1].name, items[1].price, items[1].quantity); 
         }
-
     })
 
     // reference to make event handler for class of "delete" and to remove from table body
         // https://stackoverflow.com/questions/44872879/jquery-delete-table-row-if-delete-button-is-clicked
     $(document).on("click",'.delete',function(){
         
-        // console.log($(this).closest('tr'));
         let item_name = $(this).closest('tr').find(".item-name").html();
         let item_id = $(this).closest('tr').attr('id');
         
         $(this).closest('tr').remove(); 
         removeItem(item_name);
 
-        // console.log(items); 
-
         subtotal(); 
 
     })  
 
     $(document).on("click",'.increase',function(){
-        
         
         let item_name = $(this).closest('tr').find(".item-name").html();
         let original_item = getItem(item_name); 
@@ -599,7 +440,6 @@ $(document).ready(function(){
     
     $(document).on("click",'.decrease',function(){
         
-        
         let item_name = $(this).closest('tr').find(".item-name").html();
         let original_item = getItem(item_name); 
 
@@ -614,8 +454,6 @@ $(document).ready(function(){
             subtotal();
         }
 
-        
-        
     }) 
 
     loadInitalPage(), 
@@ -623,11 +461,8 @@ $(document).ready(function(){
     $(document).on("click",'.like', async function(){
 
         let paragraph_id = $(this).closest('div').attr('id');
-        // console.log(paragraph_id);
         let paragraph_num = parseInt(paragraph_id.slice(10,)); 
 
-        // console.log(paragraph_num);
-        
         let likes_response = await fetch('https://ibs.utm.utoronto.ca/csc309/a3/text/likes', {
             method: 'POST', 
             headers: {
@@ -641,13 +476,13 @@ $(document).ready(function(){
         let likes_dict = JSON.parse(likes_result); 
         let likes_data = likes_dict["data"];
         let num_likes =  parseInt(likes_data["likes"]);
-        // console.log(num_likes);
-        
+
         $(this).html("Likes: " + num_likes);
         
     })
 
-    // reference for mutex locks for synchronization: https://stackoverflow.com/questions/40821304/how-to-make-one-ajax-request-instead-of-multiple-on-endless-scroll-implementatio
+    // reference for mutex locks for synchronization and checking if user scrolled to bottom of page: 
+    // https://stackoverflow.com/questions/40821304/how-to-make-one-ajax-request-instead-of-multiple-on-endless-scroll-implementatio
 
     var lock = false;
 
