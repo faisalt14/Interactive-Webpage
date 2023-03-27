@@ -11,9 +11,11 @@ var phone_flag = false
 var inputs_flag = false
 
 // List of items 
-// var item1 =  new Item("item_1", 90.00, 12)
-// var item2 =  new Item("item_2", 95.00, 10)
 var items = []
+
+// 
+var page_num = 1; 
+var is_next = false; 
 
 
 
@@ -221,55 +223,194 @@ function updateValues(name, price, quantity) {
     }
 }
 
-async function loadInitalPage() {
+// async function loadInitalPage() {
 
-    // reference for asynch and await for fetch: https://www.javascripttutorial.net/javascript-fetch-api/
-    let response = await fetch('https://ibs.utm.utoronto.ca/csc309/a3/text/data?paragraph=1', {
-        method: 'GET'
-    })
+//     // reference for asynch and await for fetch: https://www.javascripttutorial.net/javascript-fetch-api/
+//     let response = await fetch('https://ibs.utm.utoronto.ca/csc309/a3/text/data?paragraph=' + page_num, {
+//         method: 'GET'
+//     })
     
-    let result = await response.text(); 
-    let dict = JSON.parse(result); 
-    let data = dict["data"];
+//     let result = await response.text(); 
+//     let dict = JSON.parse(result); 
+//     let data = dict["data"];
     
-    for (let key in data){  
-        let paragraph_dict = data[key]; 
-        // console.log(paragraph_dict['paragraph']);
-        let id = 'paragraph_' + paragraph_dict['paragraph']
-        let content = paragraph_dict["content"];
-        let ending = "(Paragraph: " + paragraph_dict['paragraph'] + ")";
+//     for (let key in data){  
+//         let paragraph_dict = data[key]; 
+//         // console.log(paragraph_dict['paragraph']);
+//         let id = 'paragraph_' + paragraph_dict['paragraph']
+//         let content = paragraph_dict["content"];
+//         let ending = "(Paragraph: " + paragraph_dict['paragraph'] + ")";
         
-        // reference for creating new element tags and adding them to an existing tag
-            // https://www.tutorialrepublic.com/faq/how-to-create-a-div-element-in-jquery.php
+//         // reference for creating new element tags and adding them to an existing tag
+//             // https://www.tutorialrepublic.com/faq/how-to-create-a-div-element-in-jquery.php
 
-        // create div element for paragraph and add to end of div with id="data"
-        $("#data").append("<div " + "id='" + id + "'> " + "</div>"); 
+//         // create div element for paragraph and add to end of div with id="data"
+//         $("#data").append("<div " + "id='" + id + "'> " + "</div>"); 
 
-        // add content in a p tag 
-        $("#" + id).append("<p>" + content + " " + "<b>" + ending + "</b>" + "</p>"); 
+//         // add content in a p tag 
+//         $("#" + id).append("<p>" + content + " " + "<b>" + ending + "</b>" + "</p>"); 
+
+//         // add likes button 
+//         $("#" + id).append("<button class='like'>" + "Likes: " + paragraph_dict["likes"] + "</button>");
+//     }
+    
+//     if (dict["next"] === true){
+//         is_next = true; 
+//         page_num += 5;
+
+//     }
+//     else if (dict["next"] === false){
+//         is_next = false; 
+
+//     }
+
+// }
+
+function loadInitalPage() {
+
+    $.ajax({
+        url: 'https://ibs.utm.utoronto.ca/csc309/a3/text/data?paragraph=' + page_num,
+        type:'GET',
+        dataType: 'json',
+        success: function (data) {
+            var response = data; 
+            var data_dict = data["data"];
+            // console.log(data_dict);          
+
+            for (var paragraph_dict of data_dict){
+                var id = 'paragraph_' + paragraph_dict['paragraph']
+                var content = paragraph_dict["content"];
+                var ending = "(Paragraph: " + paragraph_dict['paragraph'] + ")";
+
+                //  reference for creating new element tags and adding them to an existing tag
+                  // https://www.tutorialrepublic.com/faq/how-to-create-a-div-element-in-jquery.php
+
+                // create div element for paragraph and add to end of div with id="data"
+                $("#data").append("<div " + "id='" + id + "'> " + "</div>"); 
+
+                // add content in a p tag 
+                $("#" + id).append("<p>" + content + " " + "<b>" + ending + "</b>" + "</p>"); 
+
+                // add likes button 
+                $("#" + id).append("<button class='like'>" + "Likes: " + paragraph_dict["likes"] + "</button>");
+                        
+            }
+
+            if (response["next"] === true){
+                is_next = true; 
+                page_num += 5;
+            }
+            else if (response["next"] === false){
+                is_next = false; 
+                $("#" + id).append("<p><b>" + "You have reached the end" + "</b></p>"); 
+
+            }
 
 
-
-        // let likes_response = await fetch('https://ibs.utm.utoronto.ca/csc309/a3/text/likes', {
-        //     method: 'POST', 
-        //     headers: {
-        //         'Content-Type': 'application/json' 
-        //     }, 
-        //     body: JSON.stringify({'paragraph': paragraph_dict['paragraph']})
-
-        // })
-
-        // let likes_result = await likes_response.text(); 
-        // let likes_dict = JSON.parse(likes_result); 
-        // let likes_data = likes_dict["data"];
-        // let num_likes =  parseInt(likes_data["likes"]);
-        // console.log(num_likes);
-
-
-        // add likes button 
-        $("#" + id).append("<button class='like'>" + "Likes: " + paragraph_dict["likes"] + "</button>");
-    }
+        }
+    })
 }
+
+// function nextPage() {
+
+//     if (is_next === true) {
+
+
+//         $.ajax({
+//             url: 'https://ibs.utm.utoronto.ca/csc309/a3/text/data?paragraph=' + page_num,
+//             type:'GET',
+//             dataType: 'json',
+//             success: function (data) {
+//                 var response = data; 
+//                 var data_dict = data["data"];
+//                 // console.log(data_dict);          
+    
+//                 for (var paragraph_dict of data_dict){
+//                     var id = 'paragraph_' + paragraph_dict['paragraph']
+//                     var content = paragraph_dict["content"];
+//                     var ending = "(Paragraph: " + paragraph_dict['paragraph'] + ")";
+    
+//                     //  reference for creating new element tags and adding them to an existing tag
+//                       // https://www.tutorialrepublic.com/faq/how-to-create-a-div-element-in-jquery.php
+    
+//                     // create div element for paragraph and add to end of div with id="data"
+//                     $("#data").append("<div " + "id='" + id + "'> " + "</div>"); 
+    
+//                     // add content in a p tag 
+//                     $("#" + id).append("<p>" + content + " " + "<b>" + ending + "</b>" + "</p>"); 
+    
+//                     // add likes button 
+//                     $("#" + id).append("<button class='like'>" + "Likes: " + paragraph_dict["likes"] + "</button>");
+                            
+//                 }
+    
+//                 if (response["next"] === true){
+//                     is_next = true; 
+//                     page_num += 5;
+//                 }
+//                 else if (response["next"] === false){
+//                     is_next = false; 
+//                     $("#" + id).append("<p><b>" + "You have reached the end" + "</b></p>"); 
+    
+//                 }
+    
+    
+//             }
+//         })
+
+//     }
+// }
+
+
+
+// async function nextPage() {
+
+//     if (is_next === true) {
+
+//         // reference for asynch and await for fetch: https://www.javascripttutorial.net/javascript-fetch-api/
+//         var response = await fetch('https://ibs.utm.utoronto.ca/csc309/a3/text/data?paragraph=' + page_num, {
+//             method: 'GET'
+//         })
+        
+//         var result = await response.text(); 
+//         var dict = JSON.parse(result); 
+//         var data = dict["data"];
+        
+//         for (let key in data){  
+//             var paragraph_dict = data[key]; 
+//             // console.log(paragraph_dict['paragraph']);
+//             var id = 'paragraph_' + paragraph_dict['paragraph']
+//             var content = paragraph_dict["content"];
+//             var ending = "(Paragraph: " + paragraph_dict['paragraph'] + ")";
+            
+//             // reference for creating new element tags and adding them to an existing tag
+//                 // https://www.tutorialrepublic.com/faq/how-to-create-a-div-element-in-jquery.php
+
+//             // create div element for paragraph and add to end of div with id="data"
+//             $("#data").append("<div " + "id='" + id + "'> " + "</div>"); 
+
+//             // add content in a p tag 
+//             $("#" + id).append("<p>" + content + " " + "<b>" + ending + "</b>" + "</p>"); 
+
+//             // add likes button 
+//             $("#" + id).append("<button class='like'>" + "Likes: " + paragraph_dict["likes"] + "</button>");
+//         }
+//     }
+
+    
+//     if (dict["next"] === true){
+//         is_next = true; 
+//         page_num += 5;
+
+//     }
+
+//     else if (dict["next"] === false){
+//         is_next = false; 
+//         $("#" + id).append("<p><b>" + "You have reached the end" + "</b></p>"); 
+        
+//     }
+
+// }
 
 function subtotal(){
     let subtotal = 0; 
@@ -287,7 +428,7 @@ function subtotal(){
 
 }
 
-  $(document).ready(function(){
+$(document).ready(function(){
     $("#username").keyup(usernameCheck),
 
     $("#password1").keyup(password1Check), 
@@ -504,24 +645,67 @@ function subtotal(){
         
         $(this).html("Likes: " + num_likes);
         
-    }) 
+    })
 
+    // reference for mutex locks for synchronization: https://stackoverflow.com/questions/40821304/how-to-make-one-ajax-request-instead-of-multiple-on-endless-scroll-implementatio
 
+    var lock = false;
 
-
+    $(window).scroll(function() {
     
+    if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {           
     
+        if(lock==true){
+            return;
+        }
+        
+        lock = true;        
+        if (is_next === true){
 
-
-
-  });
-
-  
-
-
-
-
-
-
-
+            $.ajax({
+                url: 'https://ibs.utm.utoronto.ca/csc309/a3/text/data?paragraph=' + page_num,
+                type:'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var response = data; 
+                    var data_dict = data["data"];
+                    // console.log(data_dict);          
+        
+                    for (var paragraph_dict of data_dict){
+                        var id = 'paragraph_' + paragraph_dict['paragraph']
+                        var content = paragraph_dict["content"];
+                        var ending = "(Paragraph: " + paragraph_dict['paragraph'] + ")";
+        
+                        //  reference for creating new element tags and adding them to an existing tag
+                          // https://www.tutorialrepublic.com/faq/how-to-create-a-div-element-in-jquery.php
+        
+                        // create div element for paragraph and add to end of div with id="data"
+                        $("#data").append("<div " + "id='" + id + "'> " + "</div>"); 
+        
+                        // add content in a p tag 
+                        $("#" + id).append("<p>" + content + " " + "<b>" + ending + "</b>" + "</p>"); 
+        
+                        // add likes button 
+                        $("#" + id).append("<button class='like'>" + "Likes: " + paragraph_dict["likes"] + "</button>");
+                                
+                    }
+        
+                    if (response["next"] === true){
+                        is_next = true; 
+                        page_num += 5;
+                    }
+                    else if (response["next"] === false){
+                        is_next = false; 
+                        $("#" + id).append("<p><b>" + "You have reached the end" + "</b></p>"); 
+        
+                    }
+                }
+    
+                }).always(function() {
+                    lock = false;
+                });
+            }
+        }
+    });
+});
 
