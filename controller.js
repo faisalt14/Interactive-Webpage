@@ -221,6 +221,56 @@ function updateValues(name, price, quantity) {
     }
 }
 
+async function loadInitalPage() {
+
+    // reference for asynch and await for fetch: https://www.javascripttutorial.net/javascript-fetch-api/
+    let response = await fetch('https://ibs.utm.utoronto.ca/csc309/a3/text/data?paragraph=1', {
+        method: 'GET'
+    })
+    
+    let result = await response.text(); 
+    let dict = JSON.parse(result); 
+    let data = dict["data"];
+    
+    for (let key in data){  
+        let paragraph_dict = data[key]; 
+        // console.log(paragraph_dict['paragraph']);
+        let id = 'paragraph_' + paragraph_dict['paragraph']
+        let content = paragraph_dict["content"];
+        let ending = "(Paragraph: " + paragraph_dict['paragraph'] + ")";
+        
+        // reference for creating new element tags and adding them to an existing tag
+            // https://www.tutorialrepublic.com/faq/how-to-create-a-div-element-in-jquery.php
+
+        // create div element for paragraph and add to end of div with id="data"
+        $("#data").append("<div " + "id='" + id + "'> " + "</div>"); 
+
+        // add content in a p tag 
+        $("#" + id).append("<p>" + content + " " + "<b>" + ending + "</b>" + "</p>"); 
+
+
+
+        // let likes_response = await fetch('https://ibs.utm.utoronto.ca/csc309/a3/text/likes', {
+        //     method: 'POST', 
+        //     headers: {
+        //         'Content-Type': 'application/json' 
+        //     }, 
+        //     body: JSON.stringify({'paragraph': paragraph_dict['paragraph']})
+
+        // })
+
+        // let likes_result = await likes_response.text(); 
+        // let likes_dict = JSON.parse(likes_result); 
+        // let likes_data = likes_dict["data"];
+        // let num_likes =  parseInt(likes_data["likes"]);
+        // console.log(num_likes);
+
+
+        // add likes button 
+        $("#" + id).append("<button class='like'>" + "Likes: " + paragraph_dict["likes"] + "</button>");
+    }
+}
+
 function subtotal(){
     let subtotal = 0; 
 
@@ -426,6 +476,37 @@ function subtotal(){
         
         
     }) 
+
+    loadInitalPage(), 
+
+    $(document).on("click",'.like', async function(){
+
+        let paragraph_id = $(this).closest('div').attr('id');
+        // console.log(paragraph_id);
+        let paragraph_num = parseInt(paragraph_id.slice(10,)); 
+
+        // console.log(paragraph_num);
+        
+        let likes_response = await fetch('https://ibs.utm.utoronto.ca/csc309/a3/text/likes', {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json' 
+            }, 
+            body: JSON.stringify({'paragraph': paragraph_num})
+
+        })
+
+        let likes_result = await likes_response.text(); 
+        let likes_dict = JSON.parse(likes_result); 
+        let likes_data = likes_dict["data"];
+        let num_likes =  parseInt(likes_data["likes"]);
+        // console.log(num_likes);
+        
+        $(this).html("Likes: " + num_likes);
+        
+    }) 
+
+
 
 
     
