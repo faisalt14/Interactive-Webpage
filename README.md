@@ -29,14 +29,14 @@ Each field is validated every time its value changes (e.g., by typing, deleting,
 When the submit button is clicked, all fields are validated again. If all fields are valid, a POST request is sent to the CSC309 course server (please note that the link is no longer valid since the course has ended, and successful requests cannot be sent).  
 
 
-### Amazon Shopping Cart  
+### Amazon Shopping Cart    
 
 The second task of this assignment involves creating a simple shopping cart page. When the user clicks the "Add/Update Item" button, the item is added (if it does not already exist in the cart) or updated (if the item was already in the cart). A table is provided to list each item, its price, quantity, and total amount (excluding tax), along with buttons to modify the quantity or completely remove the entry.  
 
 Each time the cart updates, the subtotal, taxes (13% HST), and Grand Total are recalculated.    
 
 
-**Notes**:
+**Notes**:  
 •	The "Add/Update Item" button is active only when all three fields are non-empty.  
 •	Quantity can never become negative; it can be at the least 0.  
 •	We assume that non-negative integers are input for quantity and non-negative floats with at most two decimal places for price.  
