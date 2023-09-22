@@ -12,7 +12,7 @@ The first section features a basic signup form with client-side validation. The 
 •	**Password**: Must be at least eight characters long and include at least one digit, one lowercase letter, one uppercase letter, and one special character (i.e., a character from the set **!@#$%^&**). Otherwise, "Password is invalid" is displayed under the password field.  
 •	**Repeat Password**: Must match the password. Otherwise, "Passwords don't match" is displayed under the repeat password field.  
 •	**Email**: Must be a valid email address. If not, the error message "Email is invalid" is displayed under the email field.  
-    •	**Note**: Valid email address validation is implemented using an online regex, and a reference can be found as a comment in controller.js.  
+    •	**Note**: Valid email address validation is implemented using an online regex, and a reference can be found as a comment in **controller.js**.  
 •	**Phone**: Must follow the format ???-???-????, where each ? is a digit. The error message for this field is "Phone is invalid."    
 
 Please note that in a real-world application, more detailed validation errors would be preferred for a better user experience. However, for simplicity in testing, we have chosen these error messages.  
